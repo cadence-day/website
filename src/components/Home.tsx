@@ -112,7 +112,7 @@ export default function Home() {
       {/* Center Column - Clock */}
       <div className="absolute inset-0 flex items-center justify-center">
         {/* Gradient glow background */}
-        <div className="absolute w-[540px] h-[540px] rounded-full" 
+        <div className="absolute w-100 h-100 md:w-80 md:h-80 lg:w-[540px] lg:h-[540px] rounded-full" 
              style={{
                background: 'radial-gradient(circle, rgba(96, 64, 195, 1) 0%, transparent 70%)'
              }}>
