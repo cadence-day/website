@@ -7,6 +7,65 @@ import ActivitySelector from './ActivitySelector';
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
+  const [showActivityLegend, setShowActivityLegend] = useState(false);
+  const [showTimeBlocks, setShowTimeBlocks] = useState(false);
+  
+  // Activity colors for time blocks
+  const activityColors = [
+    '#4F46E5', // Work - Blue-purple
+    '#10B981', // Friends - Green  
+    '#F59E0B', // Cooking - Yellow
+    '#FFFFFF', // Rest - White
+    '#8B5CF6', // Sport - Purple
+    '#3B82F6', // Reading - Blue
+  ];
+  
+  // Sample time block data (you can replace with real data)
+  const timeBlocks = [
+    { activity: 0, segments: [0, 1, 2] }, // Work from 00:00-01:30
+    { activity: 3, segments: [3, 4, 5, 6, 7] }, // Rest from 01:30-04:00  
+    { activity: 1, segments: [8, 9] }, // Friends from 04:00-05:00
+    { activity: 2, segments: [10, 11, 12, 13] }, // Cooking from 05:00-07:00
+    { activity: 4, segments: [14, 15] }, // Sport from 07:00-08:00
+    { activity: 5, segments: [16, 17, 18] }, // Reading from 08:00-09:30
+  ];
+
+  // Function to get the color for a segment based on time blocks
+  const getSegmentColor = (segmentIndex: number) => {
+    if (!showTimeBlocks) return '#1a1a1a'; // Default dark color
+    
+    for (const block of timeBlocks) {
+      if (block.segments.includes(segmentIndex)) {
+        return activityColors[block.activity];
+      }
+    }
+    return '#1a1a1a'; // Default if no activity assigned
+  };
+
+  // Handle scroll events from ActivitySelector
+  const handleScrollEvent = (direction: 'up' | 'down', isActivityLegendVisible: boolean) => {
+    if (!isActivityLegendVisible) {
+      // Activity legend is not visible yet
+      if (direction === 'down') {
+        // First scroll down - show activity legend
+        setShowActivityLegend(true);
+        setShowTimeBlocks(false);
+      } else if (direction === 'up') {
+        // Hide everything when scrolling up and legend is not visible
+        setShowActivityLegend(false);
+        setShowTimeBlocks(false);
+      }
+    } else {
+      // Activity legend is visible - time blocks toggle with scroll direction
+      if (direction === 'up') {
+        // Scroll up while legend visible - show time blocks
+        setShowTimeBlocks(true);
+      } else if (direction === 'down') {
+        // Scroll down while legend visible - hide time blocks
+        setShowTimeBlocks(false);
+      }
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -171,10 +230,11 @@ export default function Home() {
               return (
                 <div
                   key={`segment-${i}`}
-                  className="absolute border border-gray-600 bg-[#1a1a1a]"
+                  className="absolute border border-gray-600 transition-all duration-500"
                   style={{
                     width: `${segmentWidth}px`,
                     height: `${segmentHeight}px`,
+                    backgroundColor: getSegmentColor(i),
                     left: '50%',
                     top: '50%',
                     transform: `translate(-50%, -50%) translate(${Math.cos((angle + 90) * Math.PI / 180) * radius}px, ${Math.sin((angle + 90) * Math.PI / 180) * radius}px) rotate(${angle + 90}deg)`,
@@ -267,7 +327,10 @@ export default function Home() {
 
 
       {/* Activity Selector */}
-      <ActivitySelector />
+      <ActivitySelector 
+        isVisible={showActivityLegend}
+        onScrollEvent={handleScrollEvent} 
+      />
 
       {/* Bottom right CADENCE logo */}
       <div className="absolute bottom-8 right-8">

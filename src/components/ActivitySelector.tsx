@@ -12,26 +12,64 @@ const activities = [
   { name: 'Reading', color: '#3B82F6' },   // Blue
 ];
 
-export default function ActivitySelector() {
-  const [isVisible, setIsVisible] = useState(false);
+interface ActivitySelectorProps {
+  isVisible: boolean;
+  onScrollEvent?: (direction: 'up' | 'down', isVisible: boolean) => void;
+}
+
+export default function ActivitySelector({ isVisible, onScrollEvent }: ActivitySelectorProps) {
 
   useEffect(() => {
+    let touchStartY = 0;
+    
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
       
       if (event.deltaY > 0) {
-        // Scrolling down - show component
-        setIsVisible(true);
+        // Scrolling down
+        onScrollEvent?.('down', isVisible);
       } else {
-        // Scrolling up - hide component
-        setIsVisible(false);
+        // Scrolling up
+        onScrollEvent?.('up', isVisible);
       }
     };
 
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartY = event.touches[0].clientY;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      event.preventDefault();
+      
+      const touchCurrentY = event.touches[0].clientY;
+      const touchDiff = touchStartY - touchCurrentY;
+      
+      // Threshold to prevent accidental triggers
+      if (Math.abs(touchDiff) > 50) {
+        if (touchDiff > 0) {
+          // Swiping up (scrolling down effect)
+          onScrollEvent?.('down', isVisible);
+        } else {
+          // Swiping down (scrolling up effect)
+          onScrollEvent?.('up', isVisible);
+        }
+        touchStartY = touchCurrentY; // Reset for continuous scrolling
+      }
+    };
+
+    // Desktop events
     window.addEventListener('wheel', handleWheel, { passive: false });
     
-    return () => window.removeEventListener('wheel', handleWheel);
-  }, []);
+    // Mobile events
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [isVisible, onScrollEvent]);
   return (
     <motion.div
       initial={{ y: 200, opacity: 0 }}
