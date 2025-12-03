@@ -83,9 +83,9 @@ export default function ActivitySelector({ isVisible, onScrollEvent }: ActivityS
         stiffness: 200,
         damping: 30
       }}
-      className="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-20"
+      className="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-20 px-4"
     >
-      <div className="flex items-center space-x-8 ">
+      <div className="flex items-center space-x-2 lg:space-x-8">
         {activities.map((activity, index) => (
           <motion.div
             key={activity.name}
@@ -102,10 +102,10 @@ export default function ActivitySelector({ isVisible, onScrollEvent }: ActivityS
             whileTap={{ scale: 0.95 }}
           >
             <div
-              className="w-8 h-8 rounded-full mb-2 transition-transform group-hover:scale-110"
+              className="w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 transition-transform group-hover:scale-110"
               style={{ backgroundColor: activity.color }}
             />
-            <span className="text-sm text-white font-light group-hover:text-gray-300 transition-colors">
+            <span className="text-xs lg:text-sm text-white font-light group-hover:text-gray-300 transition-colors">
               {activity.name}
             </span>
           </motion.div>
