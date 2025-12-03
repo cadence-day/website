@@ -83,7 +83,7 @@ export default function ActivitySelector({ isVisible, onScrollEvent }: ActivityS
         stiffness: 200,
         damping: 30
       }}
-      className="fixed bottom-28 lg:bottom-16 left-1/2 transform -translate-x-1/2 z-20 px-4"
+      className="fixed bottom-18 lg:bottom-16 left-1/2 transform -translate-x-1/2 z-20 px-4"
     >
       <div className="flex items-center space-x-2 lg:space-x-8">
         {activities.map((activity, index) => (
