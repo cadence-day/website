@@ -6,10 +6,22 @@ import ActivitySelector from './ActivitySelector';
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   // Calculate angles for clock hands
@@ -149,6 +161,29 @@ export default function Home() {
 
           {/* Main clock circle */}
           <div className="absolute inset-8 rounded-full bg-[#282828] border border-gray-600">
+            {/* Half-hour rectangular segments around the dial */}
+            {Array.from({ length: 24 }, (_, i) => {
+              const angle = i * 15 - 90; // 24 segments of 15 degrees each
+              const radius = 172; // Distance from center
+              const segmentWidth = isMobile ? 20 : 25;
+              const segmentHeight = isMobile ? 43 : 40;
+              
+              return (
+                <div
+                  key={`segment-${i}`}
+                  className="absolute border border-gray-600 bg-[#1a1a1a]"
+                  style={{
+                    width: `${segmentWidth}px`,
+                    height: `${segmentHeight}px`,
+                    left: '50%',
+                    top: '50%',
+                    transform: `translate(-50%, -50%) translate(${Math.cos((angle + 90) * Math.PI / 180) * radius}px, ${Math.sin((angle + 90) * Math.PI / 180) * radius}px) rotate(${angle + 90}deg)`,
+                    transformOrigin: 'center',
+                  }}
+                />
+              );
+            })}
+
             {/* Hour numbers only */}
             {hourMarkers.map((marker, i) => (
               <div key={i}>
