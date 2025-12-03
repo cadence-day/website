@@ -25,10 +25,11 @@ export default function Home() {
   const hourMarkers = Array.from({ length: 12 }, (_, i) => {
     const angle = (i * 30) - 90; // -90 to start from top
     const isQuarterHour = i % 3 === 0;
+    const number = (i + 3) % 12;
     return {
       angle,
       isQuarter: isQuarterHour,
-      number: i === 0 ? 12 : i,
+      number: number === 0 ? 12 : number,
     };
   });
 
@@ -57,19 +58,19 @@ export default function Home() {
   return (
     <div className="h-screen overflow-hidden bg-[#191919] flex flex-col">
       {/* Top text section */}
-      <div className="flex pt-6 pb-0 px-8">
+      <div className="flex items-start pt-6 pb-0 px-8">
         {/* Left text */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex justify-start flex-1"
+          className="flex justify-start flex-1 "
         >
           <h3 className="
             text-[12px] md:text-lg font-light text-white text-left 
             p-2 w-full
           ">
-            Track your day, and understand your rhythm.
+            Track your day, understand your rhythm.
           </h3>
         </motion.div>
 
@@ -78,18 +79,18 @@ export default function Home() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex items-center justify-center flex-1"
+          className="flex items-center justify-center flex-1 pt-3 "
         >
           <div className="flex items-center">
-            <div className="h-px bg-[#333333] lg:w-20 md:w-10 sm:w-5"></div>
+            <div className="h-px bg-[#333333] lg:w-40 md:w-20 sm:w-5"></div>
             <p className="
-              text-xs sm:text-sm md:text-xs lg:text-sm text-gray-400 
+              text-[8px] sm:text-xxs md:text-xs lg:text-xs text-white 
               tracking-widest text-center uppercase mx-4
-              p-2
+              
             ">
               LOG YOUR ACTIVITIES
             </p>
-            <div className="h-px bg-[#333333] lg:w-20 md:w-10 sm:w-5"></div>
+            <div className="h-px bg-[#333333] lg:w-40 md:w-20 sm:w-5"></div>
           </div>
         </motion.div>
 
@@ -98,7 +99,7 @@ export default function Home() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex justify-end flex-1"
+          className="flex justify-end flex-1 "
         >
           <h3 className="
             text-[12px] md:text-lg font-light text-white text-right
@@ -165,6 +166,22 @@ export default function Home() {
               </div>
             ))}
 
+            {/* Half-hour dots */}
+            {Array.from({ length: 12 }, (_, i) => {
+              const angle = (i * 30) - 75; // -75 to place between hour markers
+              return (
+                <div
+                  key={`dot-${i}`}
+                  className="absolute w-0.5 h-0.5 bg-gray-400 rounded-full"
+                  style={{
+                    left: '50%',
+                    top: '50%',
+                    transform: `translate(-50%, -50%) translate(${Math.cos((angle + 90) * Math.PI / 180) * 130}px, ${Math.sin((angle + 90) * Math.PI / 180) * 130}px)`,
+                  }}
+                />
+              );
+            })}
+
             {/* Clock hands */}
             {/* Hour hand */}
             <motion.div
@@ -200,28 +217,11 @@ export default function Home() {
               }}
             />
 
-            {/* Second hand */}
-            <motion.div
-              className="absolute w-0.5 h-28 bg-red-500 rounded-full origin-bottom"
-              style={{
-                left: '50%',
-                bottom: '50%',
-              }}
-              animate={{
-                rotate: secondAngle
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30
-              }}
-            />
-
             {/* Center dot */}
             <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2" />
 
             {/* Date display */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-8">
+            <div className="absolute top-1/2 left-1/2 pt-6 transform -translate-x-1/2 translate-y-8">
               <p className="text-white text-sm font-light">
                 {formatDate(currentTime)}
               </p>
