@@ -234,7 +234,7 @@ export default function ClockDisplay({ showTimeBlocks, activityColors, timeBlock
 
           {/* Date display */}
           <div className="absolute top-1/2 left-1/2 pt-6 transform -translate-x-1/2 translate-y-8">
-            <p className="text-white text-sm font-light">
+            <p className="text-white text-xs sm:text-xxs font-light">
               {formatDate(currentTime)}
             </p>
           </div>
