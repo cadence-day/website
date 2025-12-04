@@ -136,8 +136,8 @@ export default function ClockDisplay({ showTimeBlocks, activityColors, timeBlock
           {/* Half-hour rectangular segments around the dial */}
           {Array.from({ length: 24 }, (_, i) => {
             const angle = i * 15 - 90; // 24 segments of 15 degrees each
-            const radius = isMobile ? 150 : 178; // Distance from center (20% smaller on mobile)
-            const segmentWidth = isMobile ? 16 : 25; // Reduced width on mobile to prevent overlap
+            const radius = isMobile ? 152 : 178; // Distance from center (20% smaller on mobile)
+            const segmentWidth = isMobile ? 20 : 25; // Reduced width on mobile to prevent overlap
             const segmentHeight = isMobile ? 30 : 40; // Also reduced height slightly
             
             return (
@@ -150,7 +150,7 @@ export default function ClockDisplay({ showTimeBlocks, activityColors, timeBlock
                 style={{
                   width: `${segmentWidth}px`,
                   height: `${segmentHeight}px`,
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   backgroundColor: getSegmentColor(i),
                   left: '50%',
                   top: '50%',
