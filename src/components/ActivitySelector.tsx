@@ -14,62 +14,19 @@ const activities = [
 
 interface ActivitySelectorProps {
   isVisible: boolean;
-  onScrollEvent?: (direction: 'up' | 'down', isVisible: boolean) => void;
+  onActivitySelect?: (activityIndex: number) => void;
+  selectedActivity?: number | null;
+  targetStatus?: {[key: number]: { remaining: number; overtime: number; isComplete: boolean }};
 }
 
-export default function ActivitySelector({ isVisible, onScrollEvent }: ActivitySelectorProps) {
+export default function ActivitySelector({ isVisible, onActivitySelect, selectedActivity, targetStatus = {} }: ActivitySelectorProps) {
+  // Format time display with + for overtime
+  const formatTime = (hours: number, isOvertime: boolean = false) => {
+    if (hours === 0) return '';
+    const timeStr = hours === Math.floor(hours) ? `${hours}h` : `${hours}h`;
+    return isOvertime ? `+${timeStr}` : timeStr;
+  };
 
-  useEffect(() => {
-    let touchStartY = 0;
-    
-    const handleWheel = (event: WheelEvent) => {
-      event.preventDefault();
-      
-      if (event.deltaY > 0) {
-        // Scrolling down
-        onScrollEvent?.('down', isVisible);
-      } else {
-        // Scrolling up
-        onScrollEvent?.('up', isVisible);
-      }
-    };
-
-    const handleTouchStart = (event: TouchEvent) => {
-      touchStartY = event.touches[0].clientY;
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      event.preventDefault();
-      
-      const touchCurrentY = event.touches[0].clientY;
-      const touchDiff = touchStartY - touchCurrentY;
-      
-      // Threshold to prevent accidental triggers
-      if (Math.abs(touchDiff) > 50) {
-        if (touchDiff > 0) {
-          // Swiping up (scrolling down effect)
-          onScrollEvent?.('down', isVisible);
-        } else {
-          // Swiping down (scrolling up effect)
-          onScrollEvent?.('up', isVisible);
-        }
-        touchStartY = touchCurrentY; // Reset for continuous scrolling
-      }
-    };
-
-    // Desktop events
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    
-    // Mobile events
-    window.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, [isVisible, onScrollEvent]);
   return (
     <motion.div
       initial={{ y: 200, opacity: 0 }}
@@ -83,7 +40,7 @@ export default function ActivitySelector({ isVisible, onScrollEvent }: ActivityS
         stiffness: 200,
         damping: 30
       }}
-      className="fixed bottom-22 lg:bottom-16 left-1/2 transform -translate-x-1/2 z-20 px-4"
+      className="fixed bottom-28 lg:bottom-16 left-1/2 transform -translate-x-1/2 z-20 px-4"
     >
       <div className="flex items-center space-x-2 lg:space-x-8">
         {activities.map((activity, index) => (
@@ -100,12 +57,54 @@ export default function ActivitySelector({ isVisible, onScrollEvent }: ActivityS
             className="flex flex-col items-center cursor-pointer group"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => onActivitySelect?.(index)}
           >
-            <div
-              className="w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 transition-transform group-hover:scale-110"
-              style={{ backgroundColor: activity.color }}
-            />
-            <span className="text-xs lg:text-sm text-white font-light group-hover:text-gray-300 transition-colors">
+            <div className="relative">
+              <div
+                className={`w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 transition-all duration-200 group-hover:scale-110 flex items-center justify-center ${
+                  selectedActivity === index ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-800' : ''
+                }`}
+                style={{ backgroundColor: activity.color }}
+              >
+{(() => {
+                  const status = targetStatus[index];
+                  if (!status) return null;
+                  
+                  if (status.overtime > 0) {
+                    // Over target - show +overtime in red/orange
+                    return (
+                      <span className={`text-[8px] lg:text-xs font-medium ${
+                        activity.color === '#FFFFFF' ? 'text-red-600' : 'text-red-300'
+                      }`}>
+                        {formatTime(status.overtime, true)}
+                      </span>
+                    );
+                  } else if (status.isComplete) {
+                    // Target reached exactly - show checkmark
+                    return (
+                      <span className={`text-[8px] lg:text-xs font-bold ${
+                        activity.color === '#FFFFFF' ? 'text-green-800' : 'text-green-300'
+                      }`}>
+                        ✓
+                      </span>
+                    );
+                  } else if (status.remaining > 0) {
+                    // Still has remaining target time
+                    return (
+                      <span className={`text-[8px] lg:text-xs font-medium ${
+                        activity.color === '#FFFFFF' ? 'text-black' : 'text-white'
+                      }`}>
+                        {formatTime(status.remaining)}
+                      </span>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
+            </div>
+            <span className={`text-xs lg:text-sm font-light transition-colors ${
+              selectedActivity === index ? 'text-white' : 'text-white group-hover:text-gray-300'
+            }`}>
               {activity.name}
             </span>
           </motion.div>
