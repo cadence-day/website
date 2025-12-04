@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ActivitySelector from './ActivitySelector';
 import Header from './Header';
 import ClockDisplay from './ClockDisplay';
@@ -11,6 +11,19 @@ export default function Home() {
   const [showTimeBlocks, setShowTimeBlocks] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<number | null>(3); // Rest activity selected by default
   const [segmentActivities, setSegmentActivities] = useState<{[key: number]: number}>({});
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Check if desktop for link behavior
+  useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+    
+    return () => window.removeEventListener('resize', checkIsDesktop);
+  }, []);
   
   // Target hours for each activity
   const [activityTargets] = useState<{[key: number]: number}>({
@@ -133,7 +146,7 @@ export default function Home() {
           {/* Instagram */}
           <a 
             href="https://www.instagram.com/cadencedotday" 
-            target="_blank" 
+            target={isDesktop ? "_blank" : "_self"}
             rel="noopener noreferrer"
             className="text-gray-700 hover:text-white transition-colors duration-200"
           >
@@ -145,7 +158,7 @@ export default function Home() {
           {/* Twitter */}
           <a 
             href="https://x.com/cadencedotday" 
-            target="_blank" 
+            target={isDesktop ? "_blank" : "_self"}
             rel="noopener noreferrer"
             className="text-gray-700 hover:text-white transition-colors duration-200"
           >
@@ -157,7 +170,7 @@ export default function Home() {
           {/* Blog */}
           <a 
             href="https://blog.cadence.day/" 
-            target="_blank" 
+            target={isDesktop ? "_blank" : "_self"}
             rel="noopener noreferrer"
             className="text-gray-700 hover:text-white transition-colors duration-200"
           >
@@ -169,7 +182,7 @@ export default function Home() {
           {/* App Store */}
           <a 
             href="https://apps.apple.com/us/app/cadence-day/id6745115112" 
-            target="_blank" 
+            target={isDesktop ? "_blank" : "_self"}
             rel="noopener noreferrer"
             className="text-gray-700 hover:text-white transition-colors duration-200"
           >

@@ -95,7 +95,7 @@ export default function ClockDisplay({ showTimeBlocks, activityColors, timeBlock
   };
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center -translate-y-[80px] lg:-translate-y-5">
+    <div className="absolute inset-0 flex items-center justify-center -translate-y-[90px] lg:-translate-y-5">
       {/* Gradient glow background */}
       <div className="absolute w-100 h-100 md:w-80 md:h-80 lg:w-[540px] lg:h-[540px] rounded-full" 
            style={{
