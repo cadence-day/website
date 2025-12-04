@@ -123,7 +123,7 @@ export default function Home() {
       />
 
       {/* Bottom left social links */}
-      <div className="absolute bottom-16 left-4 lg:bottom-8 lg:left-10">
+      <div className="absolute bottom-30 left-4 lg:bottom-8 lg:left-10">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
