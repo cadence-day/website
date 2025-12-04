@@ -9,7 +9,7 @@ import ClockDisplay from './ClockDisplay';
 export default function Home() {
   const [showActivityLegend, setShowActivityLegend] = useState(true);
   const [showTimeBlocks, setShowTimeBlocks] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<number | null>(3); // Rest activity selected by default
   const [segmentActivities, setSegmentActivities] = useState<{[key: number]: number}>({});
   
   // Target hours for each activity
@@ -181,7 +181,7 @@ export default function Home() {
       </div>
 
       {/* Bottom right CADENCE logo */}
-      <div className="absolute bottom-16 right-4 lg:bottom-8 lg:right-8">
+      <div className="absolute bottom-30 right-4 lg:bottom-8 lg:right-8">
         <motion.h6
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

@@ -42,7 +42,7 @@ export default function ActivitySelector({ isVisible, onActivitySelect, selected
       }}
       className="fixed bottom-23 lg:bottom-16 left-1/2 transform -translate-x-1/2 z-20 px-4"
     >
-      <div className="flex items-center space-x-2 lg:space-x-8">
+      <div className="flex items-center space-x-4 lg:space-x-8">
         {activities.map((activity, index) => (
           <motion.div
             key={activity.name}
